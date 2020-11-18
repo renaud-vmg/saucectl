@@ -69,7 +69,7 @@ func List(dir string, pattern string) ([]string, error) {
 			return err
 		}
 
-		if r.MatchString(p) {
+		if r.MatchString(p) && !i.IsDir() {
 			ll = append(ll, p)
 		}
 		return nil
