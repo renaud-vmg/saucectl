@@ -1,5 +1,7 @@
 package region
 
+import "os"
+
 // Region represents the sauce labs region.
 type Region uint
 
@@ -42,6 +44,12 @@ var meta = []struct {
 		"staging",
 		"https://api.staging.saucelabs.net",
 		"https://app.staging.saucelabs.net",
+	},
+	// Custom
+	{
+		"custom",
+		os.Getenv("SAUCE_API_BASE_URL"),
+		os.Getenv("SAUCE_WEBAPP_BASE_URL"),
 	},
 }
 
