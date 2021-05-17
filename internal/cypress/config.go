@@ -45,8 +45,10 @@ type Suite struct {
 
 // SuiteConfig represents the cypress config overrides.
 type SuiteConfig struct {
-	TestFiles []string          `yaml:"testFiles,omitempty" json:"testFiles"`
-	Env       map[string]string `yaml:"env,omitempty" json:"env"`
+	TestFiles 	[]string          `yaml:"testFiles,omitempty" json:"testFiles"`
+	Env       	map[string]string `yaml:"env,omitempty" json:"env"`
+	ConfigFile	string			  `yaml:"configFile,omitempty" json:"configFile"`
+	Project     string            `yaml:"project,omitempty" json"omitempty"`
 }
 
 // Cypress represents crucial cypress configuration that is required for setting up a project.
