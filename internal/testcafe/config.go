@@ -90,6 +90,8 @@ func FromFile(cfgPath string) (Project, error) {
 	}
 	p.ConfigFilePath = cfgPath
 
+	p.Notifications.Slack.Token = os.ExpandEnv(p.Notifications.Slack.Token)
+
 	if p.Testcafe.ProjectPath == "" && p.RootDir == "" {
 		return p, fmt.Errorf("could not find 'rootDir' in config yml, 'rootDir' must be set to specify project files")
 	} else if p.Testcafe.ProjectPath != "" && p.RootDir == "" {

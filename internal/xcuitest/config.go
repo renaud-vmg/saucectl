@@ -57,6 +57,8 @@ func FromFile(cfgPath string) (Project, error) {
 	}
 	p.ConfigFilePath = cfgPath
 
+	p.Notifications.Slack.Token = os.ExpandEnv(p.Notifications.Slack.Token)
+
 	if p.Sauce.Concurrency < 1 {
 		// Default concurrency is 2
 		p.Sauce.Concurrency = 2

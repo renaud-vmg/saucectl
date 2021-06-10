@@ -88,6 +88,8 @@ func FromFile(cfgPath string) (Project, error) {
 
 	p.Cypress.Key = os.ExpandEnv(p.Cypress.Key)
 
+	p.Notifications.Slack.Token = os.ExpandEnv(p.Notifications.Slack.Token)
+
 	p.Cypress.Version = config.StandardizeVersionFormat(p.Cypress.Version)
 
 	if p.Cypress.Version == "" {

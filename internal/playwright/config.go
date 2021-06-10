@@ -81,6 +81,8 @@ func FromFile(cfgPath string) (Project, error) {
 
 	p.Playwright.Version = config.StandardizeVersionFormat(p.Playwright.Version)
 
+	p.Notifications.Slack.Token = os.ExpandEnv(p.Notifications.Slack.Token)
+
 	if p.Playwright.Version == "" {
 		return p, errors.New("missing framework version. Check available versions here: https://docs.staging.saucelabs.net/testrunner-toolkit#supported-frameworks-and-browsers")
 	}
