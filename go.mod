@@ -26,8 +26,10 @@ require (
 	github.com/opencontainers/image-spec v1.0.1 // indirect
 	github.com/opencontainers/runc v0.1.1 // indirect
 	github.com/phayes/freeport v0.0.0-20180830031419-95f893ade6f2
+	github.com/pkg/errors v0.9.1 // indirect
 	github.com/rs/zerolog v1.18.0
 	github.com/ryanuber/go-glob v1.0.0
+	github.com/slack-go/slack v0.9.1 // indirect
 	github.com/spf13/cobra v1.0.0
 	github.com/spf13/pflag v1.0.3
 	github.com/stretchr/testify v1.4.0

@@ -23,6 +23,7 @@ import (
 	"github.com/saucelabs/saucectl/internal/docker"
 	"github.com/saucelabs/saucectl/internal/github"
 	"github.com/saucelabs/saucectl/internal/msg"
+	"github.com/saucelabs/saucectl/internal/notification/slack"
 	"github.com/saucelabs/saucectl/internal/playwright"
 	"github.com/saucelabs/saucectl/internal/puppeteer"
 	"github.com/saucelabs/saucectl/internal/rdc"
@@ -324,6 +325,10 @@ func runCypressInSauce(p cypress.Project, regio region.Region, tc testcomposer.C
 			ShowConsoleLog:     p.ShowConsoleLog,
 			ArtifactDownloader: &rs,
 			DryRun:             gFlags.dryRun,
+			Notifier: slack.SlackNotifier{
+				Token:    p.Notifications.Slack.Token,
+				Channels: p.Notifications.Slack.Channels,
+			},
 		},
 	}
 	return r.RunProject()

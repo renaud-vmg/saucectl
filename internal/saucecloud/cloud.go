@@ -13,6 +13,7 @@ import (
 
 	ptable "github.com/jedib0t/go-pretty/v6/table"
 	"github.com/saucelabs/saucectl/internal/espresso"
+	"github.com/saucelabs/saucectl/internal/notification/slack"
 	"github.com/saucelabs/saucectl/internal/report"
 	"github.com/saucelabs/saucectl/internal/report/table"
 
@@ -46,6 +47,7 @@ type CloudRunner struct {
 	ShowConsoleLog        bool
 	ArtifactDownloader    download.ArtifactDownloader
 	RDCArtifactDownloader download.ArtifactDownloader
+	Notifier              slack.SlackNotifier
 
 	interrupted bool
 	DryRun      bool
@@ -58,6 +60,7 @@ type result struct {
 	skipped  bool
 	err      error
 	duration time.Duration
+	url      string
 }
 
 // ConsoleLogAsset represents job asset log file name.
@@ -92,6 +95,7 @@ func (r *CloudRunner) collectResults(artifactCfg config.ArtifactDownload, result
 		TestResults: make([]report.TestResult, 0, expected),
 		Dst:         os.Stdout,
 	}
+	slackTestResults := []slack.TestResult{}
 
 	done := make(chan interface{})
 	go func() {
@@ -129,6 +133,16 @@ func (r *CloudRunner) collectResults(artifactCfg config.ArtifactDownload, result
 				Platform:   platform,
 				DeviceName: res.job.BaseConfig.DeviceName,
 			})
+
+			slackTestResults = append(slackTestResults, slack.TestResult{
+				Name:       res.name,
+				Duration:   res.duration,
+				Passed:     res.job.Passed,
+				Browser:    res.browser,
+				Platform:   platform,
+				DeviceName: res.job.BaseConfig.DeviceName,
+				JobURL:     res.url,
+			})
 		}
 
 		if download.ShouldDownloadArtifact(res.job.ID, res.job.Passed, artifactCfg) {
@@ -143,6 +157,10 @@ func (r *CloudRunner) collectResults(artifactCfg config.ArtifactDownload, result
 	close(done)
 
 	reporter.Render()
+
+	r.Notifier.TestResults = slackTestResults
+
+	r.Notifier.SendMessage()
 
 	return passed
 }
@@ -238,6 +256,7 @@ func (r *CloudRunner) runJobs(jobOpts <-chan job.StartOptions, results chan<- re
 			skipped:  skipped,
 			err:      err,
 			duration: time.Since(start),
+			url:      jobData.URL,
 		}
 	}
 }
