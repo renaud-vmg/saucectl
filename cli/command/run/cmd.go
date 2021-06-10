@@ -310,6 +310,12 @@ func runCypressInDocker(p cypress.Project, testco testcomposer.Client, rs resto.
 func runCypressInSauce(p cypress.Project, regio region.Region, tc testcomposer.Client, rs resto.Client, as *appstore.AppStore) (int, error) {
 	log.Info().Msg("Running Cypress in Sauce Labs")
 	printTestEnv("sauce")
+	fmt.Println("==========")
+	fmt.Println("==========")
+	fmt.Println(p.Notifications.Slack.Token)
+	fmt.Println(p.Notifications.Slack.Channels)
+	fmt.Println("==========")
+	fmt.Println("==========")
 
 	r := saucecloud.CypressRunner{
 		Project: p,
@@ -326,8 +332,10 @@ func runCypressInSauce(p cypress.Project, regio region.Region, tc testcomposer.C
 			ArtifactDownloader: &rs,
 			DryRun:             gFlags.dryRun,
 			Notifier: slack.SlackNotifier{
-				Token:    p.Notifications.Slack.Token,
-				Channels: p.Notifications.Slack.Channels,
+				Token:     p.Notifications.Slack.Token,
+				Channels:  p.Notifications.Slack.Channels,
+				Framework: "cypress",
+				TestName:  p.Sauce.Metadata.Name,
 			},
 		},
 	}

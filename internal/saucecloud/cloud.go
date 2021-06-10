@@ -159,6 +159,7 @@ func (r *CloudRunner) collectResults(artifactCfg config.ArtifactDownload, result
 	reporter.Render()
 
 	r.Notifier.TestResults = slackTestResults
+	r.Notifier.Passed = passed
 
 	r.Notifier.SendMessage()
 
