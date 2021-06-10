@@ -19,16 +19,17 @@ type Project struct {
 	config.TypeDef `yaml:",inline"`
 	Defaults       config.Defaults `yaml:"defaults" json:"defaults"`
 	ShowConsoleLog bool
-	ConfigFilePath string             `yaml:"-" json:"-"`
-	Sauce          config.SauceConfig `yaml:"sauce,omitempty" json:"sauce"`
-	Cypress        Cypress            `yaml:"cypress,omitempty" json:"cypress"`
-	Suites         []Suite            `yaml:"suites,omitempty" json:"suites"`
-	BeforeExec     []string           `yaml:"beforeExec,omitempty" json:"beforeExec"`
-	Docker         config.Docker      `yaml:"docker,omitempty" json:"docker"`
-	Npm            config.Npm         `yaml:"npm,omitempty" json:"npm"`
-	RootDir        string             `yaml:"rootDir,omitempty" json:"rootDir"`
-	RunnerVersion  string             `yaml:"runnerVersion,omitempty" json:"runnerVersion"`
-	Artifacts      config.Artifacts   `yaml:"artifacts,omitempty" json:"artifacts"`
+	ConfigFilePath string               `yaml:"-" json:"-"`
+	Sauce          config.SauceConfig   `yaml:"sauce,omitempty" json:"sauce"`
+	Cypress        Cypress              `yaml:"cypress,omitempty" json:"cypress"`
+	Suites         []Suite              `yaml:"suites,omitempty" json:"suites"`
+	BeforeExec     []string             `yaml:"beforeExec,omitempty" json:"beforeExec"`
+	Docker         config.Docker        `yaml:"docker,omitempty" json:"docker"`
+	Npm            config.Npm           `yaml:"npm,omitempty" json:"npm"`
+	RootDir        string               `yaml:"rootDir,omitempty" json:"rootDir"`
+	RunnerVersion  string               `yaml:"runnerVersion,omitempty" json:"runnerVersion"`
+	Artifacts      config.Artifacts     `yaml:"artifacts,omitempty" json:"artifacts"`
+	Notifications  config.Notifications `yaml:"notifications,omitempty" json:"notifications"`
 }
 
 // Suite represents the cypress test suite configuration.

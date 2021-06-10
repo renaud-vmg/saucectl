@@ -13,11 +13,12 @@ import (
 // Project represents the espresso project configuration.
 type Project struct {
 	config.TypeDef `yaml:",inline"`
-	ConfigFilePath string             `yaml:"-" json:"-"`
-	Sauce          config.SauceConfig `yaml:"sauce,omitempty" json:"sauce"`
-	Espresso       Espresso           `yaml:"espresso,omitempty" json:"espresso"`
-	Suites         []Suite            `yaml:"suites,omitempty" json:"suites"`
-	Artifacts      config.Artifacts   `yaml:"artifacts,omitempty" json:"artifacts"`
+	ConfigFilePath string               `yaml:"-" json:"-"`
+	Sauce          config.SauceConfig   `yaml:"sauce,omitempty" json:"sauce"`
+	Espresso       Espresso             `yaml:"espresso,omitempty" json:"espresso"`
+	Suites         []Suite              `yaml:"suites,omitempty" json:"suites"`
+	Artifacts      config.Artifacts     `yaml:"artifacts,omitempty" json:"artifacts"`
+	Notifications  config.Notifications `yaml:"notifications,omitempty" json:"notifications"`
 }
 
 // Espresso represents espresso apps configuration.
@@ -33,8 +34,8 @@ type TestOptions struct {
 	Package    string   `yaml:"package,omitempty" json:"package"`
 	Size       string   `yaml:"size,omitempty" json:"size"`
 	Annotation string   `yaml:"annotation,omitempty" json:"annotation"`
-	ShardIndex int     `yaml:"shardIndex,omitempty" json:"shardIndex"`
-	NumShards  int     `yaml:"numShards,omitempty" json:"numShards"`
+	ShardIndex int      `yaml:"shardIndex,omitempty" json:"shardIndex"`
+	NumShards  int      `yaml:"numShards,omitempty" json:"numShards"`
 }
 
 // Suite represents the espresso test suite configuration.

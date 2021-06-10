@@ -15,12 +15,13 @@ var supportedDeviceTypes = []string{"ANY", "PHONE", "TABLET"}
 // Project represents the xcuitest project configuration.
 type Project struct {
 	config.TypeDef `yaml:",inline"`
-	ConfigFilePath string             `yaml:"-" json:"-"`
-	DryRun         bool               `yaml:"-" json:"-"`
-	Sauce          config.SauceConfig `yaml:"sauce,omitempty" json:"sauce"`
-	Xcuitest       Xcuitest           `yaml:"xcuitest,omitempty" json:"xcuitest"`
-	Suites         []Suite            `yaml:"suites,omitempty" json:"suites"`
-	Artifacts      config.Artifacts   `yaml:"artifacts,omitempty" json:"artifacts"`
+	ConfigFilePath string               `yaml:"-" json:"-"`
+	DryRun         bool                 `yaml:"-" json:"-"`
+	Sauce          config.SauceConfig   `yaml:"sauce,omitempty" json:"sauce"`
+	Xcuitest       Xcuitest             `yaml:"xcuitest,omitempty" json:"xcuitest"`
+	Suites         []Suite              `yaml:"suites,omitempty" json:"suites"`
+	Artifacts      config.Artifacts     `yaml:"artifacts,omitempty" json:"artifacts"`
+	Notifications  config.Notifications `yaml:"notifications,omitempty" json:"notifications"`
 }
 
 // Xcuitest represents xcuitest apps configuration.

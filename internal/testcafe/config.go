@@ -19,17 +19,18 @@ var appleDeviceRegex = regexp.MustCompile(`(?i)(iP)(hone|ad)[\w\s\d]*(Simulator)
 type Project struct {
 	config.TypeDef `yaml:",inline"`
 	ShowConsoleLog bool
-	ConfigFilePath string             `yaml:"-" json:"-"`
-	Sauce          config.SauceConfig `yaml:"sauce,omitempty" json:"sauce"`
-	Suites         []Suite            `yaml:"suites,omitempty" json:"suites"`
-	BeforeExec     []string           `yaml:"beforeExec,omitempty" json:"beforeExec"`
-	Docker         config.Docker      `yaml:"docker,omitempty" json:"docker"`
-	Testcafe       Testcafe           `yaml:"testcafe,omitempty" json:"testcafe"`
-	Npm            config.Npm         `yaml:"npm,omitempty" json:"npm"`
-	RootDir        string             `yaml:"rootDir,omitempty" json:"rootDir"`
-	RunnerVersion  string             `yaml:"runnerVersion,omitempty" json:"runnerVersion"`
-	Artifacts      config.Artifacts   `yaml:"artifacts,omitempty" json:"artifacts"`
-	Defaults       config.Defaults    `yaml:"defaults,omitempty" json:"defaults"`
+	ConfigFilePath string               `yaml:"-" json:"-"`
+	Sauce          config.SauceConfig   `yaml:"sauce,omitempty" json:"sauce"`
+	Suites         []Suite              `yaml:"suites,omitempty" json:"suites"`
+	BeforeExec     []string             `yaml:"beforeExec,omitempty" json:"beforeExec"`
+	Docker         config.Docker        `yaml:"docker,omitempty" json:"docker"`
+	Testcafe       Testcafe             `yaml:"testcafe,omitempty" json:"testcafe"`
+	Npm            config.Npm           `yaml:"npm,omitempty" json:"npm"`
+	RootDir        string               `yaml:"rootDir,omitempty" json:"rootDir"`
+	RunnerVersion  string               `yaml:"runnerVersion,omitempty" json:"runnerVersion"`
+	Artifacts      config.Artifacts     `yaml:"artifacts,omitempty" json:"artifacts"`
+	Defaults       config.Defaults      `yaml:"defaults,omitempty" json:"defaults"`
+	Notifications  config.Notifications `yaml:"notifications,omitempty" json:"notifications"`
 }
 
 // Suite represents the testcafe test suite configuration.
