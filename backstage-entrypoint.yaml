@@ -1,0 +1,13 @@
+apiVersion: backstage.io/v1alpha1
+kind: Component
+metadata:
+    name: saucectl
+    description: A command line interface to run testrunner tests 
+    tags:
+      - cypress
+      - playwright      
+spec:
+    type: service
+    lifecycle: production
+    owner: devx
+    system: test-runner
