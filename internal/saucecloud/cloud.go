@@ -60,7 +60,6 @@ type result struct {
 	skipped  bool
 	err      error
 	duration time.Duration
-	url      string
 }
 
 // ConsoleLogAsset represents job asset log file name.
@@ -141,7 +140,7 @@ func (r *CloudRunner) collectResults(artifactCfg config.ArtifactDownload, result
 				Browser:    res.browser,
 				Platform:   platform,
 				DeviceName: res.job.BaseConfig.DeviceName,
-				JobURL:     res.url,
+				JobID:      res.job.ID,
 			})
 		}
 
@@ -257,7 +256,6 @@ func (r *CloudRunner) runJobs(jobOpts <-chan job.StartOptions, results chan<- re
 			skipped:  skipped,
 			err:      err,
 			duration: time.Since(start),
-			url:      jobData.URL,
 		}
 	}
 }

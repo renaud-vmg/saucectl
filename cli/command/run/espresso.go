@@ -16,6 +16,7 @@ import (
 	"github.com/saucelabs/saucectl/internal/config"
 	"github.com/saucelabs/saucectl/internal/credentials"
 	"github.com/saucelabs/saucectl/internal/espresso"
+	"github.com/saucelabs/saucectl/internal/notification/slack"
 	"github.com/saucelabs/saucectl/internal/rdc"
 	"github.com/saucelabs/saucectl/internal/region"
 	"github.com/saucelabs/saucectl/internal/resto"
@@ -193,6 +194,14 @@ func runEspressoInCloud(p espresso.Project, regio region.Region, tc testcomposer
 			ArtifactDownloader:    &rs,
 			RDCArtifactDownloader: &rc,
 			DryRun:                gFlags.dryRun,
+			Notifier: slack.SlackNotifier{
+				Token:     p.Notifications.Slack.Token,
+				Channels:  p.Notifications.Slack.Channels,
+				Framework: "espresso",
+				Region:    regio,
+				Metadata:  p.Sauce.Metadata,
+				TestEnv:   "sauce",
+			},
 		},
 	}
 

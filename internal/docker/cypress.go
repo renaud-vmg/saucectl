@@ -7,6 +7,8 @@ import (
 	"github.com/saucelabs/saucectl/internal/download"
 	"github.com/saucelabs/saucectl/internal/framework"
 	"github.com/saucelabs/saucectl/internal/job"
+	"github.com/saucelabs/saucectl/internal/notification/slack"
+	"github.com/saucelabs/saucectl/internal/region"
 )
 
 // CypressRunner represents the docker implementation of a test runner.
@@ -16,7 +18,7 @@ type CypressRunner struct {
 }
 
 // NewCypress creates a new CypressRunner instance.
-func NewCypress(c cypress.Project, ms framework.MetadataService, wr job.Writer, dl download.ArtifactDownloader) (*CypressRunner, error) {
+func NewCypress(c cypress.Project, regio region.Region, ms framework.MetadataService, wr job.Writer, dl download.ArtifactDownloader) (*CypressRunner, error) {
 	r := CypressRunner{
 		Project: c,
 		ContainerRunner: ContainerRunner{
@@ -31,6 +33,14 @@ func NewCypress(c cypress.Project, ms framework.MetadataService, wr job.Writer, 
 			ShowConsoleLog:    c.ShowConsoleLog,
 			JobWriter:         wr,
 			ArtfactDownloader: dl,
+			Notifier: slack.SlackNotifier{
+				Token:     c.Notifications.Slack.Token,
+				Channels:  c.Notifications.Slack.Channels,
+				Framework: "cypress",
+				Region:    regio,
+				Metadata:  c.Sauce.Metadata,
+				TestEnv:   "docker",
+			},
 		},
 	}
 

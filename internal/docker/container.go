@@ -5,8 +5,6 @@ import (
 	"encoding/json"
 	"errors"
 	"fmt"
-	"github.com/saucelabs/saucectl/internal/report"
-	"github.com/saucelabs/saucectl/internal/report/table"
 	"io"
 	"os"
 	"os/signal"
@@ -14,6 +12,10 @@ import (
 	"path/filepath"
 	"strings"
 	"time"
+
+	"github.com/saucelabs/saucectl/internal/notification/slack"
+	"github.com/saucelabs/saucectl/internal/report"
+	"github.com/saucelabs/saucectl/internal/report/table"
 
 	"github.com/rs/zerolog/log"
 	"github.com/saucelabs/saucectl/internal/config"
@@ -36,6 +38,7 @@ type ContainerRunner struct {
 	ShowConsoleLog    bool
 	JobReader         job.Reader
 	ArtfactDownloader download.ArtifactDownloader
+	Notifier          slack.SlackNotifier
 
 	interrupted bool
 }
@@ -287,6 +290,7 @@ func (r *ContainerRunner) collectResults(artifactCfg config.ArtifactDownload, re
 		TestResults: make([]report.TestResult, 0, expected),
 		Dst:         os.Stdout,
 	}
+	slackTestResults := []slack.TestResult{}
 
 	done := make(chan interface{})
 	go func() {
@@ -323,6 +327,13 @@ func (r *ContainerRunner) collectResults(artifactCfg config.ArtifactDownload, re
 				Browser:  res.browser,
 				Platform: "Docker",
 			})
+			slackTestResults = append(slackTestResults, slack.TestResult{
+				Name:     res.name,
+				Duration: res.duration,
+				Passed:   res.passed,
+				Browser:  res.browser,
+				JobURL:   res.jobInfo.JobDetailsURL,
+			})
 		}
 
 		r.logSuite(res)
@@ -330,6 +341,10 @@ func (r *ContainerRunner) collectResults(artifactCfg config.ArtifactDownload, re
 	close(done)
 
 	reporter.Render()
+	r.Notifier.TestResults = slackTestResults
+	r.Notifier.Passed = passed
+
+	r.Notifier.SendMessage()
 
 	return passed
 }

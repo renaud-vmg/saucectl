@@ -284,7 +284,7 @@ func runCypress(cmd *cobra.Command, tc testcomposer.Client, rs resto.Client, as 
 
 	dockerProject, sauceProject := cypress.SplitSuites(p)
 	if len(dockerProject.Suites) != 0 {
-		exitCode, err := runCypressInDocker(dockerProject, tc, rs)
+		exitCode, err := runCypressInDocker(dockerProject, regio, tc, rs)
 		if err != nil || exitCode != 0 {
 			return exitCode, err
 		}
@@ -296,11 +296,11 @@ func runCypress(cmd *cobra.Command, tc testcomposer.Client, rs resto.Client, as 
 	return 0, nil
 }
 
-func runCypressInDocker(p cypress.Project, testco testcomposer.Client, rs resto.Client) (int, error) {
+func runCypressInDocker(p cypress.Project, regio region.Region, testco testcomposer.Client, rs resto.Client) (int, error) {
 	log.Info().Msg("Running Cypress in Docker")
 	printTestEnv("docker")
 
-	cd, err := docker.NewCypress(p, &testco, &testco, &rs)
+	cd, err := docker.NewCypress(p, regio, &testco, &testco, &rs)
 	if err != nil {
 		return 1, err
 	}
@@ -310,12 +310,6 @@ func runCypressInDocker(p cypress.Project, testco testcomposer.Client, rs resto.
 func runCypressInSauce(p cypress.Project, regio region.Region, tc testcomposer.Client, rs resto.Client, as *appstore.AppStore) (int, error) {
 	log.Info().Msg("Running Cypress in Sauce Labs")
 	printTestEnv("sauce")
-	fmt.Println("==========")
-	fmt.Println("==========")
-	fmt.Println(p.Notifications.Slack.Token)
-	fmt.Println(p.Notifications.Slack.Channels)
-	fmt.Println("==========")
-	fmt.Println("==========")
 
 	r := saucecloud.CypressRunner{
 		Project: p,
@@ -335,7 +329,9 @@ func runCypressInSauce(p cypress.Project, regio region.Region, tc testcomposer.C
 				Token:     p.Notifications.Slack.Token,
 				Channels:  p.Notifications.Slack.Channels,
 				Framework: "cypress",
-				TestName:  p.Sauce.Metadata.Name,
+				Region:    regio,
+				Metadata:  p.Sauce.Metadata,
+				TestEnv:   "sauce",
 			},
 		},
 	}
@@ -403,7 +399,7 @@ func runPlaywright(cmd *cobra.Command, tc testcomposer.Client, rs resto.Client, 
 
 	dockerProject, sauceProject := playwright.SplitSuites(p)
 	if len(dockerProject.Suites) != 0 {
-		exitCode, err := runPlaywrightInDocker(dockerProject, tc, rs)
+		exitCode, err := runPlaywrightInDocker(dockerProject, regio, tc, rs)
 		if err != nil || exitCode != 0 {
 			return exitCode, err
 		}
@@ -415,11 +411,11 @@ func runPlaywright(cmd *cobra.Command, tc testcomposer.Client, rs resto.Client, 
 	return 0, nil
 }
 
-func runPlaywrightInDocker(p playwright.Project, testco testcomposer.Client, rs resto.Client) (int, error) {
+func runPlaywrightInDocker(p playwright.Project, regio region.Region, testco testcomposer.Client, rs resto.Client) (int, error) {
 	log.Info().Msg("Running Playwright in Docker")
 	printTestEnv("docker")
 
-	cd, err := docker.NewPlaywright(p, &testco, &testco, &rs)
+	cd, err := docker.NewPlaywright(p, regio, &testco, &testco, &rs)
 	if err != nil {
 		return 1, err
 	}
@@ -444,6 +440,14 @@ func runPlaywrightInSauce(p playwright.Project, regio region.Region, tc testcomp
 			ShowConsoleLog:     p.ShowConsoleLog,
 			ArtifactDownloader: &rs,
 			DryRun:             gFlags.dryRun,
+			Notifier: slack.SlackNotifier{
+				Token:     p.Notifications.Slack.Token,
+				Channels:  p.Notifications.Slack.Channels,
+				Framework: "playwright",
+				Region:    regio,
+				Metadata:  p.Sauce.Metadata,
+				TestEnv:   "sauce",
+			},
 		},
 	}
 	return r.RunProject()
@@ -509,7 +513,7 @@ func runTestcafe(cmd *cobra.Command, tc testcomposer.Client, rs resto.Client, as
 
 	dockerProject, sauceProject := testcafe.SplitSuites(p)
 	if len(dockerProject.Suites) != 0 {
-		exitCode, err := runTestcafeInDocker(dockerProject, tc, rs)
+		exitCode, err := runTestcafeInDocker(dockerProject, regio, tc, rs)
 		if err != nil || exitCode != 0 {
 			return exitCode, err
 		}
@@ -521,11 +525,11 @@ func runTestcafe(cmd *cobra.Command, tc testcomposer.Client, rs resto.Client, as
 	return 0, nil
 }
 
-func runTestcafeInDocker(p testcafe.Project, testco testcomposer.Client, rs resto.Client) (int, error) {
+func runTestcafeInDocker(p testcafe.Project, regio region.Region, testco testcomposer.Client, rs resto.Client) (int, error) {
 	log.Info().Msg("Running Testcafe in Docker")
 	printTestEnv("docker")
 
-	cd, err := docker.NewTestcafe(p, &testco, &testco, &rs)
+	cd, err := docker.NewTestcafe(p, regio, &testco, &testco, &rs)
 	if err != nil {
 		return 1, err
 	}
@@ -550,6 +554,14 @@ func runTestcafeInCloud(p testcafe.Project, regio region.Region, tc testcomposer
 			ShowConsoleLog:     p.ShowConsoleLog,
 			ArtifactDownloader: &rs,
 			DryRun:             gFlags.dryRun,
+			Notifier: slack.SlackNotifier{
+				Token:     p.Notifications.Slack.Token,
+				Channels:  p.Notifications.Slack.Channels,
+				Framework: "testcafe",
+				Region:    regio,
+				Metadata:  p.Sauce.Metadata,
+				TestEnv:   "sauce",
+			},
 		},
 	}
 	return r.RunProject()
@@ -613,6 +625,14 @@ func runXcuitestInCloud(p xcuitest.Project, regio region.Region, tc testcomposer
 			ArtifactDownloader:    &rs,
 			RDCArtifactDownloader: &rc,
 			DryRun:                gFlags.dryRun,
+			Notifier: slack.SlackNotifier{
+				Token:     p.Notifications.Slack.Token,
+				Channels:  p.Notifications.Slack.Channels,
+				Framework: "xcuitest",
+				Region:    regio,
+				Metadata:  p.Sauce.Metadata,
+				TestEnv:   "sauce",
+			},
 		},
 	}
 	return r.RunProject()
@@ -654,14 +674,14 @@ func runPuppeteer(cmd *cobra.Command, tc testcomposer.Client, rs resto.Client) (
 
 	rs.URL = regio.APIBaseURL()
 	tc.URL = regio.APIBaseURL()
-	return runPuppeteerInDocker(p, tc, rs)
+	return runPuppeteerInDocker(p, regio, tc, rs)
 }
 
-func runPuppeteerInDocker(p puppeteer.Project, testco testcomposer.Client, rs resto.Client) (int, error) {
+func runPuppeteerInDocker(p puppeteer.Project, regio region.Region, testco testcomposer.Client, rs resto.Client) (int, error) {
 	log.Info().Msg("Running puppeteer in Docker")
 	printTestEnv("docker")
 
-	cd, err := docker.NewPuppeteer(p, &testco, &testco, &rs)
+	cd, err := docker.NewPuppeteer(p, regio, &testco, &testco, &rs)
 	if err != nil {
 		return 1, err
 	}

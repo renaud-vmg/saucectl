@@ -6,6 +6,8 @@ import (
 	"github.com/saucelabs/saucectl/internal/download"
 	"github.com/saucelabs/saucectl/internal/framework"
 	"github.com/saucelabs/saucectl/internal/job"
+	"github.com/saucelabs/saucectl/internal/notification/slack"
+	"github.com/saucelabs/saucectl/internal/region"
 	"github.com/saucelabs/saucectl/internal/testcafe"
 )
 
@@ -16,7 +18,7 @@ type TestcafeRunner struct {
 }
 
 // NewTestcafe creates a new TestcafeRunner instance.
-func NewTestcafe(c testcafe.Project, ms framework.MetadataService, wr job.Writer, dl download.ArtifactDownloader) (*TestcafeRunner, error) {
+func NewTestcafe(c testcafe.Project, regio region.Region, ms framework.MetadataService, wr job.Writer, dl download.ArtifactDownloader) (*TestcafeRunner, error) {
 	r := TestcafeRunner{
 		Project: c,
 		ContainerRunner: ContainerRunner{
@@ -30,6 +32,14 @@ func NewTestcafe(c testcafe.Project, ms framework.MetadataService, wr job.Writer
 			ShowConsoleLog:    c.ShowConsoleLog,
 			JobWriter:         wr,
 			ArtfactDownloader: dl,
+			Notifier: slack.SlackNotifier{
+				Token:     c.Notifications.Slack.Token,
+				Channels:  c.Notifications.Slack.Channels,
+				Framework: "testcafe",
+				Region:    regio,
+				Metadata:  c.Sauce.Metadata,
+				TestEnv:   "docker",
+			},
 		},
 	}
 	var err error
