@@ -98,5 +98,5 @@ func (r *CypressRunner) runSuites(fileID string) bool {
 		close(jobOpts)
 	}()
 
-	return r.collectResults(r.Project.Artifacts.Download, results, len(r.Project.Suites))
+	return r.collectResults(r.Project.Artifacts.Download, r.Project.Notifications, results, len(r.Project.Suites))
 }

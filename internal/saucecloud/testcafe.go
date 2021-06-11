@@ -119,7 +119,7 @@ func (r *TestcafeRunner) runSuites(fileID string) bool {
 		close(jobOpts)
 	}()
 
-	return r.collectResults(r.Project.Artifacts.Download, results, jobsCount)
+	return r.collectResults(r.Project.Artifacts.Download, r.Project.Notifications, results, jobsCount)
 }
 
 func (r *TestcafeRunner) calcTestcafeJobsCount(suites []testcafe.Suite) int {

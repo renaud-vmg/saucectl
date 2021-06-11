@@ -89,7 +89,7 @@ func (r *XcuitestRunner) runSuites(appFileID, testAppFileID string) bool {
 		close(jobOpts)
 	}()
 
-	return r.collectResults(r.Project.Artifacts.Download, results, jobsCount)
+	return r.collectResults(r.Project.Artifacts.Download, r.Project.Notifications, results, jobsCount)
 }
 
 func (r *XcuitestRunner) startJob(jobOpts chan<- job.StartOptions, appFileID, testAppFileID string, s xcuitest.Suite, d config.Device) {
